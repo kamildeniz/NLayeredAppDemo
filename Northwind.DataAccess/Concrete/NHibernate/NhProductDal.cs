@@ -26,17 +26,14 @@ namespace Northwind.DataAccess.Concrete.NHibernate
             throw new NotImplementedException();
         }
 
-        public Product Get(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         public Product Get(Expression<Func<Product, bool>> filter = null)
         {
             throw new NotImplementedException();
         }
 
-        public List<Product> GetAll()
+
+        public List<Product> GetAll(Expression<Func<Product, bool>> filter = null)
         {
             List<Product> products = new List<Product>
             {
@@ -47,11 +44,6 @@ namespace Northwind.DataAccess.Concrete.NHibernate
                     UnitPrice=3000,UnitsInStock=12}
             };
             return products;
-        }
-
-        public List<Product> GetAll(Expression<Func<Product, bool>> filter = null)
-        {
-            throw new NotImplementedException();
         }
 
         public void Update(Product product)
