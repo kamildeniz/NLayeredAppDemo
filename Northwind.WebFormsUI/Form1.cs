@@ -1,5 +1,6 @@
 ﻿using Northwind.Business.Abstract;
 using Northwind.Business.Concrete;
+using Northwind.Business.DependencyResolvers.Ninject;
 using Northwind.DataAccess.Concrete.EntityFramework;
 using Northwind.Entities.Concrete;
 using System;
@@ -19,8 +20,9 @@ namespace Northwind.WebFormsUI
         public Form1()
         {
             InitializeComponent();
-            _productService = new ProductManager(new EfProductDal());
-            _categoryService = new CategoryManager(new EfCategoryDal());
+            _productService = InstanceFactory.GetInstance<IProductService>();
+            _categoryService = InstanceFactory.GetInstance<ICategoryService>();
+
         }
         IProductService _productService;
         ICategoryService _categoryService;
@@ -75,31 +77,46 @@ namespace Northwind.WebFormsUI
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            _productService.Add(new Product
+            try
             {
-                ProductName = tbxProductName2.Text,
-                CategoryId = Convert.ToInt32(cbxCategoryId2.SelectedValue),
-                QuantityPerUnit = tbxQuantityPerUnit.Text,
-                UnitPrice = Convert.ToInt32(tbxUnitPrice.Text),
-                UnitsInStock = Convert.ToInt16(tbxUnitsInStock.Text)
-            });
-            MessageBox.Show("Eklendi!");
-            LoadProducts();
+
+                _productService.Add(new Product
+                {
+                    ProductName = tbxProductName2.Text,
+                    CategoryId = Convert.ToInt32(cbxCategoryId2.SelectedValue),
+                    QuantityPerUnit = tbxQuantityPerUnit.Text,
+                    UnitPrice = Convert.ToInt32(tbxUnitPrice.Text),
+                    UnitsInStock = Convert.ToInt16(tbxUnitsInStock.Text)
+                });
+                MessageBox.Show("Eklendi!");
+                LoadProducts();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            _productService.Update(new Product
+            try
             {
-                ProductId = Convert.ToInt32(dgwProduct.CurrentRow.Cells[0].Value),
-                ProductName = tbxProductNameUpdate.Text,
-                CategoryId = Convert.ToInt32(cbxCategoryIdUpdate.SelectedValue),
-                QuantityPerUnit = tbxQuantityPerUnitUpdate.Text,
-                UnitPrice = Convert.ToInt32(tbxUnitPriceUpdate.Text),
-                UnitsInStock = Convert.ToInt16(tbxUnitsInStockUpdate.Text)
-            });
-            MessageBox.Show("Güncellendi!");
-            LoadProducts();
+                _productService.Update(new Product
+                {
+                    ProductId = Convert.ToInt32(dgwProduct.CurrentRow.Cells[0].Value),
+                    ProductName = tbxProductNameUpdate.Text,
+                    CategoryId = Convert.ToInt32(cbxCategoryIdUpdate.SelectedValue),
+                    QuantityPerUnit = tbxQuantityPerUnitUpdate.Text,
+                    UnitPrice = Convert.ToInt32(tbxUnitPriceUpdate.Text),
+                    UnitsInStock = Convert.ToInt16(tbxUnitsInStockUpdate.Text)
+                });
+                MessageBox.Show("Güncellendi!");
+                LoadProducts();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
         }
 
         private void dgwProduct_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -117,12 +134,19 @@ namespace Northwind.WebFormsUI
         {
             if (dgwProduct.CurrentRow != null)
             {
-                _productService.Delete(new Product
+                try
                 {
-                    ProductId = Convert.ToInt32(dgwProduct.CurrentRow.Cells[0].Value)
-                });
-                MessageBox.Show("Silindi!");
-                LoadProducts();
+                    _productService.Delete(new Product
+                    {
+                        ProductId = Convert.ToInt32(dgwProduct.CurrentRow.Cells[0].Value)
+                    });
+                    MessageBox.Show("Silindi!");
+                    LoadProducts();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
             }
         }
     }
